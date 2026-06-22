@@ -1,14 +1,19 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TarefaModel } from '../../models/tarefa.model';
+import { TarefaService } from '../../services/tarefa.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tarefa-cadastrar',
   imports: [FormsModule],
   templateUrl: './tarefa-cadastrar.html',
-  styleUrl: './tarefa-cadastrar.scss',
+  styleUrl: './tarefa-cadastrar.css',
 })
 export class TarefaCadastrar {
+  private readonly tarefaService = inject(TarefaService);
+  private readonly router = inject(Router);
+
   tarefa = signal<TarefaModel>({
     id: crypto.randomUUID(),
     descricao: "",
@@ -17,23 +22,17 @@ export class TarefaCadastrar {
   })
 
   salvar(): void {
-    const tarefas = this.carregarTarefasDoLocalStorage();
-
-    tarefas.push(this.tarefa());
-
-    const tarefaString = JSON.stringify(tarefas);
-    localStorage.setItem("tarefas", tarefaString)
-
-    alert("Tarefa cadastrada com sucesso");
+    this.tarefaService.cadastrar(this.tarefa()).subscribe({
+      next: () => {
+        alert("Tarefa cadastrada com sucesso");
+      },
+      error: erro => {
+        console.error("Erro ao cadastrar tarefa: " + erro);
+        alert("Ocorreu um erro ao cadastrar tarefa");
+      }
+    })
   }
-
-  carregarTarefasDoLocalStorage(): TarefaModel[] {
-    const tarefasString = localStorage.getItem("tarefas");
-
-    if (tarefasString === null) {
-      return [];
-    }
-
-    return JSON.parse(tarefasString) as TarefaModel[];
-  }
+  // Tarefa de final de semana: criar as telas de lista e cadastro de projetos
+  // comunicar com a API /api/v1/trabalho/projetos
+  // lista GET, cadastro POST
 }

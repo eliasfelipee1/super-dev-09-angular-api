@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-tarefa-editar',
   imports: [FormsModule],
   templateUrl: './tarefa-editar.html',
-  styleUrl: './tarefa-editar.scss',
+  styleUrl: './tarefa-editar.css',
 })
 export class TarefaEditar {
   tarefa = signal<TarefaModel>({
