@@ -1,0 +1,16 @@
+<h1>Cadastrar projeto</h1>
+
+<label for="nome">Nome</label>
+<input type="text" [(ngModel)]="projeto().nome" id="nome">
+
+<label for="codigo">Código do projeto</label>
+<input type="text" [(ngModel)]="projeto().codigoProjeto" id="codigo">
+
+<label for="custo">Custo estimado</label>
+<input type="number" [(ngModel)]="projeto().custoEstimado" id="custo">
+
+@if(projeto().custoEstimado !== null){
+  <span>Custo estimado: {{ projeto().custoEstimado }}</span>
+}
+
+<button (click)="salvar()">Salvar</button>

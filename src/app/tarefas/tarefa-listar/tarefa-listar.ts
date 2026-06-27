@@ -11,6 +11,7 @@ import { TarefaService } from '../../services/tarefa.service';
 })
 export class TarefaListar {
   private readonly tarefaService = inject(TarefaService);
+
   tarefas = signal<TarefaModel[]>([]);
 
   ngOnInit() {
@@ -26,13 +27,13 @@ export class TarefaListar {
   })
 
   carregarTarefas(): void {
-    // subscribe: inscreve o observable é isso que dispara a requsição
+    // subscrive: inscreve no Observable é isso que dispara a requisição 
     // para o back-end
     this.tarefaService.listar().subscribe({
       // next é o caso de sucesso
       next: tarefas => {
         const tarefasOrdenadas = tarefas.sort((x, y) => x.descricao.localeCompare(y.descricao));
-          this.tarefas.set(tarefasOrdenadas);
+        this.tarefas.set(tarefasOrdenadas);
       },
       // error é o caso de falha
       error: erro => {
@@ -45,8 +46,15 @@ export class TarefaListar {
   }
 
   apagar(id: string): void {
-    this.tarefas.update(tarefas => tarefas.filter(x => x.id !== id))
-    const tarefasString = JSON.stringify(this.tarefas());
-    localStorage.setItem("tarefas", tarefasString);
+    this.tarefaService.apagar(id).subscribe({
+      next: () => {
+        alert("Tarefa apagada com sucesso");
+        this.carregarTarefas();
+      },
+      error: erro => {
+        console.error("Erro ao tentar apagar tarefa:", erro);
+        alert("Não foi possível apagar sua tarefa");
+      }
+    })
   }
 }
